@@ -34,5 +34,3 @@ RUN cp python-betterproto2-conformance-test/conformance_python.py .
 
 # Run the test again
 CMD bazel test --verbose_failures --test_output=all --experimental_ui_max_stdouterr_bytes=1073741819 //python:conformance_test > /mount/stdout_output
-
-# cd betterproto2-conformance && git pull && cd .. && cp betterproto2-conformance/conformance_python.py .
