@@ -33,28 +33,21 @@ class ProtocolError(Exception):
     pass
 
 
-def _create_test_message(type):
-    if type == "protobuf_test_messages.proto3.TestAllTypesProto3":
-        return TestAllTypesProto3()
-    return None
-
-
 def do_test(request: ConformanceRequest) -> ConformanceResponse:
     response = ConformanceResponse()
 
     is_json = betterproto2.which_one_of(request, "payload")[0] == "json_payload"
-    test_message = _create_test_message(request.message_type)
 
-    if test_message is None:
+    if request.message_type != "protobuf_test_messages.proto3.TestAllTypesProto3":
         return ConformanceResponse(skipped="non proto3 tests not supported")
 
-    if (not is_json) and (test_message is None):
+    if not is_json:
         raise ProtocolError("Protobuf request doesn't have specific payload type")
 
     try:
         if betterproto2.which_one_of(request, "payload")[0] == "protobuf_payload":
             try:
-                test_message.parse(request.protobuf_payload)
+                test_message = TestAllTypesProto3().parse(request.protobuf_payload)
             except Exception as e:
                 response.parse_error = str(e)
                 return response
@@ -65,7 +58,7 @@ def do_test(request: ConformanceRequest) -> ConformanceResponse:
                     request.test_category
                     == TestCategory.JSON_IGNORE_UNKNOWN_PARSING_TEST
                 )
-                test_message.from_json(request.json_payload)
+                test_message = TestAllTypesProto3().from_json(request.json_payload)
             except Exception as e:
                 response.parse_error = str(e)
                 return response
