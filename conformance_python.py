@@ -41,9 +41,6 @@ def do_test(request: ConformanceRequest) -> ConformanceResponse:
     if request.message_type != "protobuf_test_messages.proto3.TestAllTypesProto3":
         return ConformanceResponse(skipped="non proto3 tests not supported")
 
-    if not is_json:
-        raise ProtocolError("Protobuf request doesn't have specific payload type")
-
     try:
         if betterproto2.which_one_of(request, "payload")[0] == "protobuf_payload":
             try:
