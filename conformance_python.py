@@ -44,7 +44,7 @@ def do_test(request: ConformanceRequest) -> ConformanceResponse:
     try:
         if betterproto2.which_one_of(request, "payload")[0] == "protobuf_payload":
             try:
-                test_message = TestAllTypesProto3().parse(request.protobuf_payload)
+                test_message = TestAllTypesProto3.parse(request.protobuf_payload)
             except Exception as e:
                 response.parse_error = str(e)
                 return response
@@ -55,7 +55,7 @@ def do_test(request: ConformanceRequest) -> ConformanceResponse:
                     request.test_category
                     == TestCategory.JSON_IGNORE_UNKNOWN_PARSING_TEST
                 )
-                test_message = TestAllTypesProto3().from_json(request.json_payload)
+                test_message = TestAllTypesProto3.from_json(request.json_payload)
             except Exception as e:
                 response.parse_error = str(e)
                 return response
@@ -108,7 +108,7 @@ def do_test_io():
     if len(serialized_request) != length:
         raise IOError("I/O error")
 
-    request = ConformanceRequest().parse(serialized_request)
+    request = ConformanceRequest.parse(serialized_request)
 
     response = do_test(request)
 
